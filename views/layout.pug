@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/materialize.min.css')
+  body
+    nav
+      a.brand-logo(href="#") Logo
+      .nav-wrapper
+        ul#nav-mobile.right.hide-on-med-and-down
+          if !user
+            li 
+              a(href="/auth/register") Register
+            li
+              a(href="/auth/login") Login
+          if user
+            li
+              a(href="/auth/logout") Logout
+
+    script(src="/javascripts/jquery-3.2.1.min.js")
+    script(src="/javascripts/materialize.min.js")
+    br
+    .container
+      a(href="/nemoze") check
+      block content

@@ -1,0 +1,27 @@
+extends layout
+
+block content
+    if err
+        p #{err}
+    if !user
+        .row
+            .col.s6.offset-s3
+                form(action="/auth/login", method="post")
+                    .input-field
+                        label(for="username") Username
+                        input#first(type="text", name="username")
+                    .input-field
+                        label(for="name") Name
+                        input(type="text",name="name")
+                    .input-field
+                        label(for="surname") Surname
+                        input(type="text",name="surname")
+                    .input-field
+                        label(for="password") Password
+                        input#second(type="password", name="password")
+                    .input-field
+                        label(for="password_confirm") Password
+                        input#second(type="password", name="password_confirm")
+                    input.waves-effect.waves-light.btn(type="submit", value="Registruj se")
+    else
+        p Vec ste prijavljeni
