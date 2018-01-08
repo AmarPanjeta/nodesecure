@@ -12,19 +12,25 @@ router.get('/register',function(req,res){
 router.post('/register',function(req,res){
 
     //check password strength
-    var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+
+    console.log(req.body);
     
     //check user provided data 
 
     // save user 
+    var user = {
+        username:req.body.username,
+        name:req.body.name,
+        surname:req.body.surname,
+        password:req.body.password
+    }
 
-    console.log(hashedPassword);
-
-    var token = jwt.sign({ id: 1 }, 'biggestsecret', {
-        expiresIn: 86400 // expires in 24 hours
-      });
-
-    res.status(200).send({auth:true,token:token});
+    users.saveUser(user,(err,results,fields)=>{
+        if(err) res.render('forbidden');
+        else{
+            res.status(200).send('uspjesna registracija');
+        }
+    });
 });
 
 router.get('/login',function(req,res){
@@ -50,9 +56,12 @@ router.post('/login',function(req,res){
             var okPassword = bcrypt.compareSync(req.body.password,result[0].password);
             if (okPassword){
                 user = {
+
                     name:result[0].name,
-                    name:result[0].surname,
-                    name:result[0].username,
+                    surname:result[0].surname,
+                    username:result[0].username,
+                    type:result[0].type,
+                    id:result[0].id
                 }
                 var token = jwt.sign({user:user},'biggestsecret',{
                     expiresIn:86400

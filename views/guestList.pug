@@ -1,0 +1,55 @@
+extends layout
+
+block content
+    h2.naslov Pozvani gosti 
+
+    if guests
+        table.bordered
+            tr
+  
+                th Ime
+                th Prezime
+                th Korisnicko ime
+                th Opcija
+
+            each g in guests
+                tr
+                   
+                    td #{g.name}
+                    td #{g.surname}
+                    td #{g.username}
+                    td 
+                        form(action="/deleteinvitation", method="post")
+                                input(type="hidden", name="userId" value=g.id)
+                                input(type="hidden", name="eventId" value=eventId) 
+                                input(type="hidden", name="_csrf" value=_csrf)
+                                input.waves-effect.waves-light.btn(type="submit", value="Otkazi poziv")
+
+    h2.naslov Gosti koje mozete pozvati
+
+    if uninvitedUsers
+        table.bordered
+            tr
+               
+                th Ime
+                th Prezime
+                th Korisnicko ime
+                th Opcija
+
+            each u in uninvitedUsers
+                tr
+                    
+                    td #{u.name}
+                    td #{u.surname}
+                    td #{u.username}
+                    td 
+                       
+                        form(action="/invite", method="post")
+                                input(type="hidden", name="userId" value=u.id)
+                                input(type="hidden", name="eventId" value=eventId) 
+                                input(type="hidden", name="_csrf" value=_csrf)
+                                input.waves-effect.waves-light.btn(type="submit", value="Pozovi gosta")
+    br
+    .row
+        .col.m6
+            a.waves-effect.waves-light.btn.col.m12(href="/myevents") Nazad

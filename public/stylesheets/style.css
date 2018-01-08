@@ -9,3 +9,12 @@ a {
 .body-width{
   
 }
+
+.space{
+  margin-right: 15px;
+}
+
+.naslov{
+  color:#00695c;
+  font: "Lucida Grande", Helvetica, Arial, sans-serif;
+}

@@ -1,0 +1,29 @@
+extends layout
+
+block content
+    h2.naslov.center-align Dodavanje poklona za #{eventId}
+        .row
+            .col.s6.offset-s3
+                form(action="/showavilableitems/"+eventId, method="get")
+                    input(type="hidden", name="_csrf" value=_csrf)
+                      
+                    div
+                        label(for="type") Naziv prodavnice
+                        select(name="store_id")
+                            each s in allStores
+                                option(value=s.id) #{s.name}
+
+                        
+              
+
+                    input.waves-effect.waves-light.btn(type="submit", value="Prikazi artikle")
+
+                    script.
+                        $(document).ready(function() {
+                        $('select').material_select();
+                        });
+
+                        $.ajax()
+        
+
+              

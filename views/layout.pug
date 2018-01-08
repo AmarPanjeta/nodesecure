@@ -15,6 +15,13 @@ html
             li
               a(href="/auth/login") Login
           if user
+            if (user.type = 1)
+              li 
+                a(href="/myevents") Moji eventi
+              li
+                a(href="/myinvitations") Moji pozivi
+              li
+                a(href="/addevent") Dodaj event
             li
               a(href="/auth/logout") Logout
 

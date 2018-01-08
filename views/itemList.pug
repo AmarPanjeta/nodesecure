@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    h2.naslov.center-align Dodavanje poklona za #{eventId} #{storeId}
+        .row
+            .col.s6.offset-s3
+                each eg in availableGifts
+                    .card.blue-grey.darken-1
+                        .card-content.white-text
+                            span.card-title Naziv poklona:#{eg.id} i #{eg.name}
+                            p
+                                b Opis poklona:
+                                span #{eg.description}
+                            form(action="/addgifttogiftlist", method="post")
+                                input(type="hidden", name="itemId" value=eg.id)
+                                input(type="hidden", name="eventId" value=eventId)
+                                input(type="hidden", name="_csrf" value=_csrf)
+                                input.waves-effect.waves-light.btn(type="submit", value="Dodaj poklon")

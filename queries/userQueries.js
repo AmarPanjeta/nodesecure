@@ -12,7 +12,7 @@ function saveUser(user,fnCallback){
 }
 
 function findUserByUsername(username,fnCallback){
-    connection.query('SELECT name,surname,username,password,type from reg_user where username=?',[username], fnCallback);
+    connection.query('SELECT id,name,surname,username,password,type from reg_user where username=?',[username], fnCallback);
 }
 
 /*

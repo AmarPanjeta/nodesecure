@@ -15,6 +15,7 @@
     "express-validator": "^4.3.0",
     "helmet": "^3.9.0",
     "hpp": "^0.2.2",
+    "inputmask": "^3.3.11",
     "jsonwebtoken": "^8.1.0",
     "morgan": "~1.9.0",
     "mysql": "^2.15.0",

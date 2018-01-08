@@ -1,0 +1,37 @@
+extends layout
+
+block content
+    h2.naslov.center-align Dodavanje novog eventa
+        .row
+            .col.s6.offset-s3
+                form(action="/addevent", method="post")
+                    input(type="hidden", name="_csrf" value=_csrf)
+                    .input-field
+                        label(for="name") Naziv
+                        input(type="text",name="name",data-length="255")
+                    .input-field
+                        label(for="description") Opis
+                        textarea.materialize-textarea(type="text",name="description",data-length="65535")
+                    
+                    .input-field
+                        label(for="date") Datum
+                        input(type="text",name="date", placeholder="yyyy-mm-dd hh:mm:ss")
+                      
+                    div
+                        label(for="type") Tip eventa
+                        select(name="type")
+                            option(value="Rodjendan") Rodjendan
+                            option(value="Vjencanje") Vjencanje
+                            option(value="Rodjenje djeteta") Rodjenje djeteta
+                            option(value="Preseljenje u drugi dom") Preseljenje u drugi dom
+                            option(value="Diploma") Diploma
+                        
+              
+
+                    input.waves-effect.waves-light.btn(type="submit", value="Dodaj event")
+
+                    script.
+                        $(document).ready(function() {
+                        $('select').material_select();
+                        });
+              

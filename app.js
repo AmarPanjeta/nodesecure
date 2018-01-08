@@ -32,13 +32,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 //security modules
 app.use(helmet());
 app.use(hpp());
+/*
 app.use(helmet.contentSecurityPolicy({
   directives:{
     defaultSrc:["'self'"],
-    styleSrc:["'self'"],
+    styleSrc:["'self'"]/*,
     scriptSrc:["'self'"]
   }
-}));
+}));*/
 app.use(csrf({cookie:true}));
 app.use( function( req, res, next ) {
   res.locals._csrf = req.csrfToken() ;
@@ -58,7 +59,7 @@ app.use(function(req, res, next) {
 
 app.use(authority);
 app.use('/', index);
-app.use('/users', users);
+
 app.use('/auth', auth);
 /*
 app.use(function (req, res, next) {
@@ -83,7 +84,7 @@ app.use(function (req, res, next) {
 app.use('/cookietest',cookietest);
 
 app.use(cookieAuthentication);
-
+app.use('/', users);
 /*
 app.use((req,res,next)=>{
   res.locals.user=req.user;
@@ -113,23 +114,4 @@ app.use(function(err, req, res, next) {
 });
 
 
-var users = require('./queries/userQueries');
-
-users.getUsers((err,results,fields)=>{
-  console.log(1);
-  console.log(results);
-  users.getUsers((err,results,fields)=>{
-    console.log(2);
-    console.log(results);
-    users.getUsers((err,results,fields)=>{
-      console.log(3);
-      console.log(results);
-    });
-  });
-});
-
-users.findUserByUsername('amarp',(err,result,fields)=>{
-  if(err) console.log(err);
-  console.log("aaa",result);
-});
 module.exports = app;
