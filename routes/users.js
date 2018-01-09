@@ -13,56 +13,65 @@ router.get('/', function(req, res, next) {
 });
 
 router.get("/ouritems",function(req,res){
-  //console.log("evo user:",res.locals.user.id);
-  items.getItemsByStoreId(res.locals.user.id,(err,results,fields) => {
-    console.log("evo rez:",results);
-    if(err)
-      res.render('forbidden')
-    else{
-      var availableItems = results.map(i => {
-        return{
-          id: i.id,
-          name: i.name,
-          description: i.description,
-          store_id: i.store_id
-        }
-      });
+  if(res.locals.user.store_id==null) res.render('forbidden',{error:"Nemate pravo pristupa ovoj stranici"});
+  else {
+    //console.log("evo user:",res.locals.user.id);
+    items.getItemsByStoreId(res.locals.user.id,(err,results,fields) => {
       console.log("evo rez:",results);
-      res.render('storeItems',{availableItems:availableItems, storeId:availableItems[0].store_id});
-    }
-  })
+      if(err)
+        res.render('forbidden')
+      else{
+        var availableItems = results.map(i => {
+          return{
+            id: i.id,
+            name: i.name,
+            description: i.description,
+            store_id: i.store_id
+          }
+        });
+        console.log("evo rez:",results);
+        res.render('storeItems',{availableItems:availableItems, storeId:res.locals.user.store_id});
+      }
+    })
+  }
 });
 
 router.get("/additem/:storeId",function(req,res){
-  console.log("ueee",res.locals.user.id);
-  console.log("radnjaa",req.params.storeId);
-  users.getStoreIdByUserId(res.locals.user.id,(err,results,fields) => {
-    if(err)
-      res.render('forbidden')
-    else{
-     
-      console.log("radnjaa",req.params.storeId);
-      res.render('createItem',{storeId:req.params.storeId});
-    }
-    
-  })
+  if(res.locals.user.store_id!=req.params.storeId) res.render('forbidden',{error:"Ovoj stranici imaju pristup samo radnici radnje."})
+  else {
+    console.log("ueee",res.locals.user.id);
+    console.log("radnjaa",req.params.storeId);
+    users.getStoreIdByUserId(res.locals.user.id,(err,results,fields) => {
+      if(err)
+        res.render('forbidden')
+      else{
+      
+        console.log("radnjaa",req.params.storeId);
+        res.render('createItem',{storeId:req.params.storeId});
+      }
+      
+    });
+  }
   
 });
 
 router.post("/additem/:storeId",function(req,res){
-  var item = {
-    name:req.body.name,
-    description:req.body.description,
-    storeId: req.params.storeId
+  if(res.locals.user.store_id!=req.params.storeId) res.render('forbidden',{error:"Ovu akciju mogu izvrsavati samo radnici radnje."});
+  else {
+    var item = {
+      name:req.body.name,
+      description:req.body.description,
+      storeId: req.params.storeId
 
-  };
-  items.createItem(item,(err,results,fields) => {
-    if(err)
-      res.render('forbidden')
-    else{
-      res.redirect('/ouritems');
-    }
-  })
+    };
+    items.createItem(item,(err,results,fields) => {
+      if(err)
+        res.render('forbidden')
+      else{
+        res.redirect('/ouritems');
+      }
+    })
+  }
 })
 
 router.get('/myevents',function(req,res){
@@ -75,7 +84,7 @@ router.get('/myevents',function(req,res){
           id: o.id,
           name: o.name,
           description: o.description,
-          date: o.date,
+          date: new Date(o.date).toUTCString().split(' ').slice(0, 4).join(' '),
           type: o.type
         }
       });
@@ -95,8 +104,12 @@ router.get('/events',function(req,res){
           id: e.id,
           name: e.name,
           description: e.description,
-          date: e.date,
-          type: e.type
+          date: new Date(e.date).toUTCString().split(' ').slice(0, 4).join(' '),     
+          type: e.type,
+          owner_id: e.owner_id,
+          owner_username: e.owner_username,
+          owner_name: e.owner_name,
+          owner_surname: e.owner_surname
         }
       })
       res.render('events',{ourEvents:ourEvents});
@@ -107,37 +120,47 @@ router.get('/events',function(req,res){
 
 router.get("/showeventgifts/:eventId",function(req,res){
   console.log("store",res.locals.user.store_id);
-  events.getAvailabeEventItemsByStoreId(req.params.eventId,res.locals.user.store_id,(err,results,fields) => {
+  events.getEventById(req.params.eventId,(err,result2,fields) =>{
     if(err)
       res.render('forbidden')
-    else {
-      var availabeGifts = results.map( g => {
-        return {
-          id: g.id,
-          name: g.name,
-          description: g.description,
-          available: g.available
-        }
-      });
-      events.getSoldEventItemsByStoreId(req.params.eventId,res.locals.user.store_id,(err,results1, fields) => {
+    else{
+      var selectedEvent = result2[0].name;
+      console.log("ime eventa",selectedEvent);
+      events.getAvailabeEventItemsByStoreId(req.params.eventId,res.locals.user.store_id,(err,results,fields) => {
         if(err)
           res.render('forbidden')
         else {
-          var soldGifts = results1.map( d => {
+          var availabeGifts = results.map( g => {
             return {
-              id: d.id,
-              name: d.name,
-              description: d.description,
-              available: d.available
+              id: g.id,
+              name: g.name,
+              description: g.description,
+              available: g.available
             }
           });
-          res.render('storeGiftList',{availabeGifts:availabeGifts,soldGifts:soldGifts,storeId:res.locals.user.store_id,eventId:req.params.eventId});
+          events.getSoldEventItemsByStoreId(req.params.eventId,res.locals.user.store_id,(err,results1, fields) => {
+            if(err)
+              res.render('forbidden')
+            else {
+              var soldGifts = results1.map( d => {
+                return {
+                  id: d.id,
+                  name: d.name,
+                  description: d.description,
+                  available: d.available
+                }
+              });
+              res.render('storeGiftList',{availabeGifts:availabeGifts,soldGifts:soldGifts,storeId:res.locals.user.store_id,eventId:req.params.eventId,selectedEvent:selectedEvent});
+            }
+          })
+          
         }
+    
       })
-      
     }
 
-  })
+  });
+
 })
 
 router.get('/eventgifts/:event_id',function(req,res){
@@ -201,7 +224,7 @@ router.get('/myinvitations',function(req,res){
           id: i.id,
           name: i.name,
           description: i.description,
-          date: i.date,
+          date: new Date(i.date).toUTCString().split(' ').slice(0, 4).join(' '),
           type: i.type
         }
       });

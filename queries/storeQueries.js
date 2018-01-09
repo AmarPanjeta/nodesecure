@@ -10,7 +10,7 @@ function getAvailableItemsForEvent(eventId,storeId,fnCallback){
 }
 
 function getEventsByStoreId(storeId,fnCallback){
-    connection.query('select distinct e.id,e.name,e.description,e.date, e.type from event e,item i, event_gift eg where e.id=eg.item_id and i.id=eg.event_id and i.store_id=?',[storeId],fnCallback);
+    connection.query('select distinct e.id,e.name,e.description,e.date, e.type, e.owner_id, ru.username AS owner_username,ru.name AS owner_name,ru.surname AS owner_surname from event e,item i, event_gift eg,reg_user ru where e.id=eg.event_id and i.id=eg.item_id and i.store_id=? and ru.id=e.owner_id',[storeId],fnCallback);
 }
 module.exports={
     getStores,

@@ -19,7 +19,8 @@ block content
                                     br
                                     div.center-align
                                         input.waves-effect.waves-light.btn(type="submit", value="Dodaj poklon")
-                else
-                    h3.naslov Trenutno nema dostupnih artikala u ovoj radnji
-                
-                a.waves-effect.waves-light.btn.col.m12(href="/addgifttoevent/"+eventId) Nazad
+                if availableGifts.length==0
+                    h6.naslov 
+                        i Trenutno nema dostupnih artikala u ovoj radnji.
+                hr
+                a.waves-effect.waves-light.btn.col.m6(href="/addgifttoevent/"+eventId) Nazad

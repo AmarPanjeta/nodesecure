@@ -1,7 +1,7 @@
 var connection = require('./connection');
 
 function getInvitationsByUserId(id, fnCallback){
-    connection.query('SELECT e.id,e.name,e.description,e.date,e.type FROM event e,invitation i WHERE i.user_id=1 and e.id=i.event_id',[id],fnCallback);
+    connection.query('SELECT e.id,e.name,e.description,e.date,e.type FROM event e,invitation i WHERE i.user_id=? and e.id=i.event_id',[id],fnCallback);
 }
 
 function getGuestsByEventId(id, fnCallback){

@@ -22,7 +22,8 @@ block content
                         .card-action
                             a(href="/eventgifts/"+ ev.id) Prikazi poklone
                             a(href="/invitations/"+ ev.id) Prikazi goste
-    else
-        h3.naslov.center-align Trenutno nemate vlastitih evenata
+    if events.length==0
+        h4.naslov.center-align 
+            i Trenutno nemate vlastitih evenata.
 
         

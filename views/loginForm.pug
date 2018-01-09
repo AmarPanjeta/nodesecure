@@ -1,19 +1,20 @@
 extends layout
 
 block content
-    if err
-        p #{err}
-    if !user
-        .row
-            .col.s6.offset-s3
-                form(action="/auth/login", method="post")
-                    input(type="hidden", name="_csrf", value=_csrf)
-                    .input-field
-                        label(for="username") Username
-                        input#first(type="text", name="username")
-                    .input-field
-                        label(for="password") Password
-                        input#second(type="password", name="password")
-                    input.waves-effect.waves-light.btn(type="submit", value="Registruj se")
-    else
-        p Vec ste prijavljeni
+    h3.naslov.center-align Prijava korisnika
+        if err
+            p #{err}
+        if !user
+            .row
+                .col.s6.offset-s3
+                    form(action="/auth/login", method="post")
+                        input(type="hidden", name="_csrf", value=_csrf)
+                        .input-field
+                            label(for="username") Koriscnicko ime
+                            input#first(type="text", name="username")
+                        .input-field
+                            label(for="password") Korisnicka sifra
+                            input#second(type="password", name="password")
+                        input.waves-effect.waves-light.btn(type="submit", value="Prijavi se")
+        else
+            p Vec ste prijavljeni

@@ -22,7 +22,9 @@ block content
                         .card-action
                             a(href="/invitationgifts/"+ inv.id) Prikazi poklone
 
-    else
-        h3.naslov.center-align Trenutno nemate vlastitih evenata
+    if myinvitations.length==0
+        h4.naslov.center-align 
+            i Trenutno nemate evenata na koje ste pozvani.
+
 
         

@@ -6,7 +6,9 @@ block content
     if ourEvents
         table.bordered
             tr
-                
+                th Vlasnikovo korisnicko ime
+                th Ime vlasnika
+                th Prezime vlasnika
                 th Naziv
                 th Opis
                 th Datum
@@ -16,18 +18,19 @@ block content
             each e in ourEvents
                 tr
                     
+                    td #{e.owner_username}
+                    td #{e.owner_name}
+                    td #{e.owner_surname}
                     td #{e.name}
                     td #{e.description}
                     td #{e.date}
                     td #{e.type}
                     td
-                        form(action="/showeventgifts/"+e.id, method="get")
-                                input(type="hidden", name="_csrf" value=_csrf)
-                                input.waves-effect.waves-light.btn(type="submit", value="Prikazi poklone") 
+                        .col.m6
+                            a.waves-effect.waves-light.btn.col.m5(href="/showeventgifts/"+e.id) Prikazi poklone
+               
+    
+    if ourEvents.length==0
+        h6.naslov.center-align 
+            i Trenutno nema evenata na kojima su vasi artikli trazeni.
                         
-
-
-    br
-    .row
-        .col.m6
-            a.waves-effect.waves-light.btn.col.m12(href="/") Nazad

@@ -2,6 +2,10 @@ extends layout
 
 block content
 
-    div Nemate pravo pristupa ovoj stranici
+    h2.naslov.center-align Nemate pravo pristupa ovoj stranici
 
-    p #{err}
+    if error
+        h3.naslov.center-align Greska:#{error}
+    br
+
+    a(href="/" style="text-align:center;display:block;") Povratak na pocetnu stranu
