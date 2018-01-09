@@ -1,0 +1,47 @@
+extends layout
+
+block content
+    h2.center-align.naslov Event : #{eventId}
+    .row 
+                .col.s12.m6
+                    h4.naslov Slobodni pokloni:
+                    each eg in availabeGifts
+                        .card.blue-grey.darken-1
+                            .card-content.white-text
+                                span.card-title Naziv poklona: #{eg.name}
+                                p
+                                    b Opis poklona:
+                                    span #{eg.description}
+                                form(action="/changestatustofalse", method="post")
+                                    input(type="hidden", name="itemId" value=eg.id)
+                                    input(type="hidden", name="eventId" value=eventId)
+                                    input(type="hidden", name="_csrf" value=_csrf)
+                                    br
+                                    div.center-align
+                                        input.waves-effect.waves-light.btn(type="submit", value="Prebaci u kupljene")
+                      
+
+    
+                .col.s12.m6
+                    h4.naslov Kupljeni pokloni:
+                    each e in soldGifts
+                        .card.red.lighten-2
+                            .card-content.white-text
+                                span.card-title Naziv poklona: #{e.name}
+                                p
+                                    b Opis poklona:
+                                    span #{e.description}
+                                form(action="/changestatustotrue", method="post")
+                                    input(type="hidden", name="itemId" value=e.id)
+                                    input(type="hidden", name="eventId" value=eventId)
+                                    input(type="hidden", name="_csrf" value=_csrf)
+                                    br
+                                    div.center-align
+                                        input.waves-effect.waves-light.btn(type="submit", value="Prebaci u slobodne")
+                            
+   
+
+    .row
+        .col.m6
+            a.waves-effect.waves-light.btn.col.m12(href="/events") Nazad
+

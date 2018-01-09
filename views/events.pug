@@ -1,0 +1,33 @@
+extends layout
+
+block content
+    h2.naslov Eventi
+
+    if ourEvents
+        table.bordered
+            tr
+                
+                th Naziv
+                th Opis
+                th Datum
+                th Tip
+                th Opcija
+
+            each e in ourEvents
+                tr
+                    
+                    td #{e.name}
+                    td #{e.description}
+                    td #{e.date}
+                    td #{e.type}
+                    td
+                        form(action="/showeventgifts/"+e.id, method="get")
+                                input(type="hidden", name="_csrf" value=_csrf)
+                                input.waves-effect.waves-light.btn(type="submit", value="Prikazi poklone") 
+                        
+
+
+    br
+    .row
+        .col.m6
+            a.waves-effect.waves-light.btn.col.m12(href="/") Nazad

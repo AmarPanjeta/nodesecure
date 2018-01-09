@@ -61,7 +61,8 @@ router.post('/login',function(req,res){
                     surname:result[0].surname,
                     username:result[0].username,
                     type:result[0].type,
-                    id:result[0].id
+                    id:result[0].id,
+                    store_id:result[0].store_id
                 }
                 var token = jwt.sign({user:user},'biggestsecret',{
                     expiresIn:86400

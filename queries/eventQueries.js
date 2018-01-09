@@ -28,6 +28,18 @@ function getEventItems(idEvent,fnCallback){
     
 }
 
+function getEventItemsByStoreId(idEvent,idStore,fnCallback){
+    connection.query('SELECT i.id AS id,i.name AS name, i.description,eg.available FROM item i,event_gift eg WHERE eg.event_id=1 and eg.item_id=i.id and i.store_id=1',[idEvent,idStore],fnCallback);
+}
+
+function getAvailabeEventItemsByStoreId(idEvent,idStore,fnCallback){
+    connection.query('SELECT i.id AS id,i.name AS name, i.description,eg.available FROM item i,event_gift eg WHERE eg.event_id=? and eg.item_id=i.id and eg.available=true and i.store_id=?',[idEvent,idStore],fnCallback);
+}
+
+function getSoldEventItemsByStoreId(idEvent,idStore,fnCallback){
+    connection.query('SELECT i.id AS id,i.name AS name, i.description,eg.available FROM item i,event_gift eg WHERE eg.event_id=? and eg.item_id=i.id and eg.available=false and i.store_id=?',[idEvent,idStore],fnCallback);
+}
+
 function createEvent(event,fnCallback){
     connection.query('INSERT INTO event (name,description,date,type,owner_id) VALUES (?,?,?,?,?)',[event.name,event.description,event.date,event.type,event.owner_id],fnCallback);
 }
@@ -47,5 +59,8 @@ module.exports={
     getSoldItems,
     getEventById,
     createEvent,
-    getEventItems
+    getEventItems,
+    getEventItemsByStoreId,
+    getAvailabeEventItemsByStoreId,
+    getSoldEventItemsByStoreId
 }

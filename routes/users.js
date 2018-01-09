@@ -4,11 +4,66 @@ var events = require('../queries/eventQueries');
 var invitations = require('../queries/invitationQueries');
 var eventgifts = require('../queries/eventGiftQueries');
 var stores = require('../queries/storeQueries');
+var items = require('../queries/itemQueries');
+var users = require('../queries/userQueries');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
+
+router.get("/ouritems",function(req,res){
+  //console.log("evo user:",res.locals.user.id);
+  items.getItemsByStoreId(res.locals.user.id,(err,results,fields) => {
+    console.log("evo rez:",results);
+    if(err)
+      res.render('forbidden')
+    else{
+      var availableItems = results.map(i => {
+        return{
+          id: i.id,
+          name: i.name,
+          description: i.description,
+          store_id: i.store_id
+        }
+      });
+      console.log("evo rez:",results);
+      res.render('storeItems',{availableItems:availableItems, storeId:availableItems[0].store_id});
+    }
+  })
+});
+
+router.get("/additem/:storeId",function(req,res){
+  console.log("ueee",res.locals.user.id);
+  console.log("radnjaa",req.params.storeId);
+  users.getStoreIdByUserId(res.locals.user.id,(err,results,fields) => {
+    if(err)
+      res.render('forbidden')
+    else{
+     
+      console.log("radnjaa",req.params.storeId);
+      res.render('createItem',{storeId:req.params.storeId});
+    }
+    
+  })
+  
+});
+
+router.post("/additem/:storeId",function(req,res){
+  var item = {
+    name:req.body.name,
+    description:req.body.description,
+    storeId: req.params.storeId
+
+  };
+  items.createItem(item,(err,results,fields) => {
+    if(err)
+      res.render('forbidden')
+    else{
+      res.redirect('/ouritems');
+    }
+  })
+})
 
 router.get('/myevents',function(req,res){
   events.getEventsOfUser(res.locals.user.id,(err,results,fields)=>{
@@ -29,6 +84,61 @@ router.get('/myevents',function(req,res){
     }
   });
 });
+
+router.get('/events',function(req,res){
+  stores.getEventsByStoreId(res.locals.user.store_id,(err,results,fields) => {
+    if(err)
+      res.render('forbidden')
+    else{
+      var ourEvents = results.map( e => {
+        return {
+          id: e.id,
+          name: e.name,
+          description: e.description,
+          date: e.date,
+          type: e.type
+        }
+      })
+      res.render('events',{ourEvents:ourEvents});
+    }
+  })
+ 
+})
+
+router.get("/showeventgifts/:eventId",function(req,res){
+  console.log("store",res.locals.user.store_id);
+  events.getAvailabeEventItemsByStoreId(req.params.eventId,res.locals.user.store_id,(err,results,fields) => {
+    if(err)
+      res.render('forbidden')
+    else {
+      var availabeGifts = results.map( g => {
+        return {
+          id: g.id,
+          name: g.name,
+          description: g.description,
+          available: g.available
+        }
+      });
+      events.getSoldEventItemsByStoreId(req.params.eventId,res.locals.user.store_id,(err,results1, fields) => {
+        if(err)
+          res.render('forbidden')
+        else {
+          var soldGifts = results1.map( d => {
+            return {
+              id: d.id,
+              name: d.name,
+              description: d.description,
+              available: d.available
+            }
+          });
+          res.render('storeGiftList',{availabeGifts:availabeGifts,soldGifts:soldGifts,storeId:res.locals.user.store_id,eventId:req.params.eventId});
+        }
+      })
+      
+    }
+
+  })
+})
 
 router.get('/eventgifts/:event_id',function(req,res){
   var eventId=req.params.event_id;
@@ -188,6 +298,26 @@ router.get('/showavilableitems/:eventId',function(req,res){
       
   }
 })
+})
+
+router.post('/changestatustotrue',function(req,res){
+  console.log('tjkfchgjkoplhg')
+  eventgifts.changeStatusToTrue(req.body.itemId,req.body.eventId,(err,results,fields) => {
+    console.log('tu smo')
+    if(err)
+      res.render('forbidden')
+    else
+      res.redirect('/showeventgifts/'+req.body.eventId);
+  })
+})
+
+router.post('/changestatustofalse',function(req,res){
+  eventgifts.changeStatusToFalse(req.body.itemId,req.body.eventId,(err,results,fields) => {
+    if(err)
+      res.render('forbidden')
+    else
+      res.redirect('/showeventgifts/'+req.body.eventId);
+  })
 })
 
 router.get('/addgifttoevent/:eventId',function(req,res){

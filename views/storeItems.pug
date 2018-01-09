@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    h2.naslov.center-align Nasi artikli
+    .row 
+        .col.s6.offset-s3
+            each eg in availableItems
+                .card.blue-grey.darken-1
+                    .card-content.white-text
+                        span.card-title Naziv poklona: #{eg.name}
+                        p
+                            b Opis poklona:
+                            span #{eg.description}
+
+
+    .row
+        .col.s6.offset-s3
+            a.waves-effect.waves-light.btn.col.m12(href="/additem/"+storeId) Dodaj poklon

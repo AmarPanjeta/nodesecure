@@ -12,9 +12,12 @@ function saveUser(user,fnCallback){
 }
 
 function findUserByUsername(username,fnCallback){
-    connection.query('SELECT id,name,surname,username,password,type from reg_user where username=?',[username], fnCallback);
+    connection.query('SELECT id,name,surname,username,password,type,store_id from reg_user where username=?',[username], fnCallback);
 }
 
+function getStoreIdByUserId(userId,fnCallback){
+    connection.query('SELECT store_id FROM reg_user WHERE id=?',[userId],fnCallback);
+}
 /*
 function (error, results, fields) {
     if (error) throw error;
@@ -26,5 +29,6 @@ function (error, results, fields) {
 module.exports={
     getUsers,
     saveUser,
-    findUserByUsername
+    findUserByUsername,
+    getStoreIdByUserId
 }

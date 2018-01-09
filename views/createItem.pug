@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    h2.naslov.center-align Dodavanje novog artikla
+        .row
+            .col.s6.offset-s3
+                form(action="/additem/"+storeId, method="post")
+                    input(type="hidden", name="_csrf" value=_csrf)
+                    .input-field
+                        label(for="name") Naziv artikla
+                        input(type="text",name="name",data-length="255")
+                    .input-field
+                        label(for="description") Opis artikla
+                        textarea.materialize-textarea(type="text",name="description",data-length="65535")
+                        
+                .row
+                    a.waves-effect.waves-light.btn.col.m5.space(href="/ouritems") Nazad
+                    input.waves-effect.waves-light.btn.col.m5.right(type="submit", value="Dodaj artikal")

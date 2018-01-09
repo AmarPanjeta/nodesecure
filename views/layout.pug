@@ -15,15 +15,23 @@ html
             li
               a(href="/auth/login") Login
           if user
-            if (user.type = 1)
+            if (user.type == 1)
               li 
                 a(href="/myevents") Moji eventi
               li
                 a(href="/myinvitations") Moji pozivi
               li
                 a(href="/addevent") Dodaj event
-            li
-              a(href="/auth/logout") Logout
+              li
+                a(href="/auth/logout") Logout
+            
+            if (user.type == 2)
+              li
+                a(href="/ouritems") Nasi artikli
+              li
+                a(href="/events") Eventi
+              li
+                a(href="/auth/logout") Logout
 
     script(src="/javascripts/jquery-3.2.1.min.js")
     script(src="/javascripts/materialize.min.js")
