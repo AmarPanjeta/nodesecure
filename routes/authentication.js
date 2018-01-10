@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
+var zxcvbn = require('zxcvbn');
+var connection = require('../queries/connection');
 var users = require('../queries/userQueries');
 
 router.get('/register',function(req,res){
@@ -10,27 +12,53 @@ router.get('/register',function(req,res){
 });
 
 router.post('/register',function(req,res){
-
-    //check password strength
-
-    console.log(req.body);
+    let password = req.body.password;
     
-    //check user provided data 
-
-    // save user 
-    var user = {
-        username:req.body.username,
-        name:req.body.name,
-        surname:req.body.surname,
-        password:req.body.password
+    //check for whitespaces
+    if(req.body.name.length == 0 || req.body.surname.length == 0 || req.body.username.length == 0 || req.body.password.length == 0 || req.body.password_confirm.length ==0){
+        res.render('registerForm',{err:"Sva polja moraju biti popunjena!"});
     }
+    else if(password.indexOf(' ')!=-1 || password.length<8){
+        res.render('registerForm',{err:"Sifra ne smije sadrzavati razmake i mora imati barem 8 znakova!"});
+    }
+    else if(password.search(/\d/)==-1 || password.search(/[A-Z]/)==-1){
+        res.render('registerForm',{err:"Sifra mora sadrzavati bar jedan broj i jedno veliko slovo!"});
+    }
+    else if(password!= req.body.password_confirm){
+        res.render('registerForm',{err:"Ukucane sifre se ne podudaraju"});
+    }
+    else if(zxcvbn(password).score<3){
+        res.render('registerForm',{err:"Ukucana sifra nije dovoljno sigurna"});
+    }
+    else{
+        connection.query('select count(*) as number from reg_user where username =?',[req.body.username],(err,results,fields)=>{
+            if(err) {
+                console.log(err);
+                res.render('forbidden',{error:'Greska prilikom pristupa bazi'});
+            }
+            if(results[0].number>0) res.render('registerForm',{err:"Korisnicko ime je zauzeto"});
+            else {
+                //check user provided data 
 
-    users.saveUser(user,(err,results,fields)=>{
-        if(err) res.render('forbidden');
-        else{
-            res.status(200).send('uspjesna registracija');
-        }
-    });
+                // save user 
+                
+                var user = {
+                    username:req.body.username,
+                    name:req.body.name,
+                    surname:req.body.surname,
+                    password:req.body.password
+                }
+
+                users.saveUser(user,(err,results,fields)=>{
+                    if(err) res.render('forbidden');
+                    else{
+                        res.render('okRegistration');
+                    }
+                });                
+            }
+        });
+        
+    }
 });
 
 router.get('/login',function(req,res){

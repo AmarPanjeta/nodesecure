@@ -285,7 +285,8 @@ router.get('/invitationgifts/:event_id',function(req,res){
 });
 
 router.get('/addevent',function(req,res){
-  res.render('createEvent');
+  if(res.locals.user.type==1) res.render('createEvent');
+  else res.render('forbidden');
 });
 
 router.post('/addgifttogiftlist',function(req,res){
@@ -436,7 +437,6 @@ router.post("/deleteinvitation",function(req,res){
 
 router.post('/addevent', function(req,res){
   console.log("tijelo zahtjeva:",req.body);
-
   var event = {
     name: req.body.name,
     description: req.body.description,
@@ -444,6 +444,11 @@ router.post('/addevent', function(req,res){
     type: req.body.type,
     owner_id: res.locals.user.id
   }
+  if(event.name.length==0 || event.description.length==0 || event.date.length==0 || event.type.length==0){
+    res.render('createEvent');
+  }
+  else{
+  
   events.createEvent(event, (err,results,fields) => {
     if(err) res.render('forbidden')
     else {
@@ -451,6 +456,6 @@ router.post('/addevent', function(req,res){
       //res.render('myEvents');
       res.redirect('/myevents');
     }
-  })
+  })}
 })
 module.exports = router;
