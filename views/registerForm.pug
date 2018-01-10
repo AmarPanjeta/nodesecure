@@ -11,19 +11,19 @@ block content
                         input(type="hidden", name="_csrf" value=_csrf)
                         .input-field
                             label(for="username") Korisnicko ime
-                            input#first(type="text", name="username")
+                            input#first.validate(type="text",required="", name="username",pattern=".{2,}",title="Korisnicko ime mora biti duzine barem 2 karaktera")
                         .input-field
                             label(for="name") Ime
-                            input(type="text",name="name")
+                            input.validate(type="text",name="name",required="",pattern=".{3,}",title="Ime mora biti duzine barem 3 karaktera")
                         .input-field
                             label(for="surname") Prezime
-                            input(type="text",name="surname")
+                            input.validate(type="text",name="surname",required="",pattern=".{3,}",title="Prezime mora biti duzine barem 3 karaktera")
                         .input-field
                             label(for="password") Korisnicka sifra
-                            input#second(type="password", name="password")
+                            input#second.validate(type="password",required="", name="password",pattern="(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}",title="Sifra mora biti duzine barem 8 karaktera i sadrzavati barem: jedno veliko i jedno malo slovo i jedan broj")
                         .input-field
                             label(for="password_confirm") Ponovljena korisnicka sifra
-                            input#second(type="password", name="password_confirm")
+                            input#second.validate(type="password",required="", name="password_confirm")
                         input.waves-effect.waves-light.btn(type="submit", value="Registruj se")
         else
             p Vec ste prijavljeni

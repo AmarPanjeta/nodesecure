@@ -8,10 +8,10 @@ block content
                     input(type="hidden", name="_csrf" value=_csrf)
                     .input-field
                         label(for="name") Naziv artikla
-                        input(type="text",name="name",data-length="255")
+                        input.validate(type="text",name="name",required="",pattern=".{3,}",title="Ime mora biti duzine barem 3 karaktera",data-length="255")
                     .input-field
                         label(for="description") Opis artikla
-                        textarea.materialize-textarea(type="text",name="description",data-length="65535")
+                        textarea.materialize-textarea.validate(type="text",name="description",pattern=".{6,}",title="Opis mora biti duzine barem 6 karaktera",required="",data-length="65535")
                     br
                         
                     .row
