@@ -445,10 +445,15 @@ router.post('/addevent', function(req,res){
     owner_id: res.locals.user.id
   }
   if(event.name.length==0 || event.description.length==0 || event.date.length==0 || event.type.length==0){
-    res.render('createEvent');
+    res.render('createEvent',{error:"Sva polja moraju biti popunjena"});
+  }
+  else if(event.date.search(/(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))/)!=0){
+    res.render('createEvent',{error:"Datum nije u odgovarajucem formatu"});
+  }
+  else if(!["Rodjendan","Vjencanje","Diploma","Rodjenje djeteta","Preseljenje u drugi dom"].includes(event.type) ){
+    res.render('createEvent',{error:"Niste odabrali vrijednos iz liste!"});
   }
   else{
-  
   events.createEvent(event, (err,results,fields) => {
     if(err) res.render('forbidden')
     else {
