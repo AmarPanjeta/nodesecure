@@ -9,7 +9,7 @@ function getGuestsByEventId(id, fnCallback){
 }
 
 function getUnivitedUsersByEventId(id,fnCallback){
-    connection.query('select ru.id,ru.name,ru.surname,ru.username from reg_user ru where ru.id!=(select owner_id from event where id=?) and ru.id not in (select user_id from invitation where event_id=?)',[id,id],fnCallback);
+    connection.query('select ru.id,ru.name,ru.surname,ru.username from reg_user ru where ru.id!=(select owner_id from event where id=?) and ru.id not in (select user_id from invitation where event_id=?) and type=1',[id,id],fnCallback);
     
 }
 

@@ -6,6 +6,7 @@ var eventgifts = require('../queries/eventGiftQueries');
 var stores = require('../queries/storeQueries');
 var items = require('../queries/itemQueries');
 var users = require('../queries/userQueries');
+var connection = require('../queries/connection');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -169,7 +170,8 @@ router.get('/eventgifts/:event_id',function(req,res){
     if(err)
       res.render('forbidden')
     else{
-      let event = {name:results[0].name,id:eventId};
+      if(results.length!=0 && results[0].owner_id==res.locals.user.id){
+        let event = {name:results[0].name,id:eventId};
       console.log("Event", event);
       events.getAvailableItems(eventId,(err,results1,fields)=>{
         console.log("usli u if");
@@ -202,10 +204,13 @@ router.get('/eventgifts/:event_id',function(req,res){
                 res.render('eventGiftList',{availableGifts:availableGifts, soldGifts:soldGifts, event:event});
               }
             });
-
-        
         }
       });
+      }
+      else{
+        res.render('forbidden',{error:"Ne mozete pristupiti ovoj stranici"});
+      }
+      
     }
 
   });
@@ -407,15 +412,25 @@ router.post("/invite",function(req,res){
     event_id:req.body.eventId,
     user_id:req.body.userId
   }
-  console.log("neki aaaaaa:", invitation);
-  invitations.createInvitation(invitation,(err,results,fields) =>{
-    if(err)
-      res.render('forbidden')
-    else{
-      
-      res.redirect('/invitations/'+req.body.eventId);
+  connection.query("select owner_id from event where id=?",[req.body.eventId],(err,results,fields)=>{
+    if(err) res.render('forbidden');
+    console.log(results);
+    if(results.length!=0 && results[0].owner_id==res.locals.user.id){
+      console.log("neki aaaaaa:", invitation);
+      invitations.createInvitation(invitation,(err,results,fields) =>{
+        if(err)
+          res.render('forbidden')
+        else{
+          
+          res.redirect('/invitations/'+req.body.eventId);
+        }
+      })
+    }
+    else {
+      res.render('forbidden',{error:"Nemate dozvolu za izvrsavanje ove akcije"});
     }
   })
+
 })
 
 router.post("/deleteinvitation",function(req,res){
@@ -424,15 +439,24 @@ router.post("/deleteinvitation",function(req,res){
     event_id:req.body.eventId,
     user_id:req.body.userId
   }
-  console.log("neki aaaaaa:", invitation);
-  invitations.deleteInvitation(invitation,(err,results,fields) =>{
-    if(err)
-      res.render('forbidden')
+  connection.query("select owner_id from event where id=?",[req.body.eventId],(err,results,fields)=>{
+    if(err) res.render('forbidden');
+    if(results.length!=0 && results[0].owner_id==res.locals.user.id){
+      console.log("neki aaaaaa:", invitation);
+      invitations.deleteInvitation(invitation,(err,results,fields) =>{
+        if(err)
+          res.render('forbidden')
+        else{
+          
+          res.redirect('/invitations/'+req.body.eventId);
+        }
+      })
+    }
     else{
-      
-      res.redirect('/invitations/'+req.body.eventId);
+      res.render('forbidden',{error:"Nemate dozvolu za izvrsavanje ove akcije"});
     }
   })
+
 })
 
 router.post('/addevent', function(req,res){

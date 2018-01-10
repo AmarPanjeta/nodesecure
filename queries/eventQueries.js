@@ -3,7 +3,7 @@
 var connection = require('./connection');
 
 function getEventById(id, fnCallback){
-    connection.query('SELECT name FROM event e WHERE id=?',[id],fnCallback);
+    connection.query('SELECT name,owner_id FROM event e WHERE id=?',[id],fnCallback);
 }
 
 function getEventsOfUser(id, fnCallback){
