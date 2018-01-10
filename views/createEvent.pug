@@ -8,14 +8,14 @@ block content
                     input(type="hidden", name="_csrf" value=_csrf)
                     .input-field
                         label(for="name") Naziv
-                        input(type="text",name="name",data-length="255")
+                        input.validate(type="text",name="name",required="",pattern=".{3,}",title="Ime mora biti duzine barem 3 karaktera",data-length="255")
                     .input-field
                         label(for="description") Opis
-                        textarea.materialize-textarea(type="text",name="description",data-length="65535")
+                        textarea.materialize-textarea.validate(type="text",name="description",pattern=".{6,}",title="Opis mora biti duzine barem 6 karaktera",required="",data-length="65535")
                     
                     .input-field
                         label(for="date") Datum
-                        input(type="text",name="date", placeholder="yyyy-mm-dd hh:mm:ss")
+                        input.validate(type="text",name="date",required="", placeholder="yyyy-mm-dd",pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))",title="Datum unesite u formatu gggg-mm-dd")
                       
                     div
                         label(for="type") Tip eventa
